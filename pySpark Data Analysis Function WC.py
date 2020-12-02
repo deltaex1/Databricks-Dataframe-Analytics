@@ -1,5 +1,7 @@
 %python
 
+%pip install pyspark
+
 from pyspark.sql.functions import col, countDistinct, isnan, avg, length, max, min
 
 def categorical_summarized(df, dfName, limit):
@@ -58,3 +60,6 @@ def categorical_summarized(df, dfName, limit):
     colCount +=1 #used for counting columns for print for each table
     
   print('***** End of Analysis for Report {}***** \n\n\n'.format(dfName))
+  
+  df = sqlContext.sql('select * from {}'.format(dfName))
+  categorical_summarized(df, dfName, 10)
