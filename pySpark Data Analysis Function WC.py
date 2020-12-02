@@ -1,5 +1,6 @@
 %python
 
+#install prerequisite modules in Databricks
 %pip install pyspark
 
 from pyspark.sql.functions import col, countDistinct, isnan, avg, length, max, min
@@ -61,5 +62,6 @@ def categorical_summarized(df, dfName, limit):
     
   print('***** End of Analysis for Report {}***** \n\n\n'.format(dfName))
   
+  #imports table within Databricks and executes using function, dfName is the name of the table queried from
   df = sqlContext.sql('select * from {}'.format(dfName))
   categorical_summarized(df, dfName, 10)
