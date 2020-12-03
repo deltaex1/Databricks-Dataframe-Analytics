@@ -25,10 +25,14 @@ def categorical_summarized(df, dfName, limit):
     print('{}.'.format(colCount))
     print('Column Name: "{}"."{}"'.format(dfName,col))
     #get data type (may need new function to predict type)
-    print('Data Type: {}'.format(dict(df.dtypes)[col]))
+    datatype = dict(df.dtypes)[col]
+    print('Data Type: {}'.format(datatype))
+    if datatype != 'timestamp':
+      # count and % of non-nulls (isnan does not work with TimeStamps)
+      nullCount = df.filter((df[col] == "") | df[col].isNull() | isnan(df[col])).count()
+    else:
+      nullCount = df.filter((df[col] == "") | df[col].isNull()).count()
 
-    # count and % of non-nulls
-    nullCount = df.filter((df[col] == "") | df[col].isNull() | isnan(df[col])).count()
     nonNullCount = rowCount - nullCount
     if nonNullCount != 0: #runs only if data rows are not null, nan, or blank
       nonNullpercent = round((rowCount - nullCount)/rowCount,2)
@@ -65,3 +69,5 @@ def categorical_summarized(df, dfName, limit):
   #imports table within Databricks and executes using function, dfName is the name of the table queried from
   df = sqlContext.sql('select * from {}'.format(dfName))
   categorical_summarized(df, dfName, 10)
+
+#Will eventually need to build statistical packages for non-categorical value analysis
